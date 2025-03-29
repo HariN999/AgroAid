@@ -1,0 +1,185 @@
+<html>
+{% extends 'base.html' %}
+
+{% block pagetitle %}
+AI Engine
+{% endblock pagetitle %}
+
+{% block body %}
+
+<style>
+    body {
+        background: radial-gradient(circle, #E0F8E0, #98E898);
+        font-family: 'Arial', sans-serif;
+    }
+
+    .navbar {
+        background: rgba(120, 190, 140, 0.9) !important; /* Soft green */
+    }
+
+    .shadow-box {
+        background: rgba(255, 255, 255, 0.9);
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    h1 {
+        color: #034D03;
+        font-weight: bold;
+    }
+</style>
+
+
+
+
+<div class="container">
+    <div class="row mb-5 text-center">
+        <div class="col-lg-10 mx-auto">
+            <h1 class="display-4 mt-3"><b>🍀 Agro Aid 🍀</b></h1>
+            <p class="lead">Let AI Engine Help You Detect Plant Diseases</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Why Disease Detection is Important -->
+        <div class="col-md-4">
+            <div class="shadow-box">
+                <h5><b>Why is it necessary to detect disease in plants?</b></h5>
+                <p>Plant diseases can reduce crop yield and impact food production...</p>
+            </div>
+        </div>
+
+        <!-- File Upload Section -->
+        <div class="col-md-4">
+            <div class="shadow-box text-center">
+                <img id="preview" src="https://www.pngjoy.com/pngl/250/4840262_plants-png-indoors-tropical-plant-png-hd-png.png"
+                    height="200" width="200" class="rounded-circle mb-3" alt="Plant Image">
+
+                <form id="uploadForm" action="/submit" method="POST" enctype="multipart/form-data">
+                    <input type="file" id="actual-btn" hidden name="image" accept="image/*" onchange="displayFileName()" />
+                    <label for="actual-btn" class="btn btn-outline-success">Choose File</label>
+                    <span id="file-chosen">No file chosen</span>
+
+                    <h6 class="mt-3 text-muted">Upload a plant's leaf image and let AI analyze it.</h6>
+                    <button type="submit" class="btn btn-custom mt-2">Submit</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Prevention Tips -->
+        <div class="col-md-4">
+            <div class="shadow-box">
+                <h5><b>Prevent Plant Disease, Follow these steps:</b></h5>
+                <ul>
+                    <li>Follow Good Sanitation Practices.</li>
+                    <li>Ensure proper air circulation.</li>
+                    <li>Use disease-resistant plant varieties.</li>
+                    <li>Rotate crops for healthy soil.</li>
+                    <li>Remove infected leaves immediately.</li>
+                </ul>
+                <a target="_blank" href="https://www.thespruce.com/prevent-plant-diseases-in-your-garden-2539511">
+                    <button class="btn btn-custom">More Info</button>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Symptom-Based Diagnosis -->
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="shadow-box">
+                <h5><b>Enter Symptoms:</b></h5>
+                <form id="disease-form">
+                    <textarea id="symptoms" class="custom-input" placeholder="Enter symptoms here" rows="5" cols="50"></textarea>
+                    <button type="button" class="btn btn-custom mt-3" onclick="predictDisease()">Predict Disease</button>
+                </form>
+
+                <!-- Language Selector -->
+                <select id="language-selector" class="form-control form-control-sm mt-3" style="width: 200px;">
+                    <option value="en">English</option>
+                    <option value="hi">हिंदी (Hindi)</option>
+                    <option value="te">తెలుగు (Telugu)</option>
+                </select>
+
+                <div id="prediction-results" class="mt-4" style="display: none;">
+                    <h5><b>Predicted Disease:</b></h5>
+                    <p id="disease-name"></p>
+                    <h6><b>Prevention:</b></h6>
+                    <p id="prevention"></p>
+                    <h6><b>Recommended Supplements:</b></h6>
+                    <p id="supplements"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const diseaseData = [
+        {
+            disease: "Powdery Mildew",
+            symptoms: ["white powdery spots", "yellowing leaves", "stunted growth"],
+            prevention: "Ensure good air circulation, avoid overhead watering.",
+            supplements: "Fungicides, Neem oil"
+        },
+        {
+            disease: "Downy Mildew",
+            symptoms: ["yellow spots", "dark green leaves", "fuzzy growth on leaves"],
+            prevention: "Water plants at the base, use resistant varieties.",
+            supplements: "Copper-based fungicides, Bacillus subtilis"
+        }
+    ];
+
+    function predictDisease() {
+        const symptomsInput = document.getElementById('symptoms').value.toLowerCase();
+        const results = diseaseData.filter(disease => 
+            disease.symptoms.some(symptom => symptomsInput.includes(symptom))
+        );
+
+        if (results.length > 0) {
+            const disease = results[0];
+            document.getElementById('disease-name').innerText = disease.disease;
+            document.getElementById('prevention').innerText = disease.prevention;
+            document.getElementById('supplements').innerText = disease.supplements;
+            document.getElementById('prediction-results').style.display = 'block';
+        } else {
+            document.getElementById('prediction-results').style.display = 'none';
+            alert("No matching disease found based on symptoms.");
+        }
+    }
+
+    function translateText(lang) {
+        fetch(`/translate?lang=${lang}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert("Translation failed.");
+                return;
+            }
+
+            document.getElementById('disease-name').innerText = data.title;
+            document.getElementById('prevention').innerText = data.prevent;
+            document.getElementById('supplements').innerText = data.supplements;
+        })
+        .catch(error => {
+            console.error("Translation Error:", error);
+            alert("Error fetching translation.");
+        });
+    }
+
+    document.getElementById("language-selector").addEventListener("change", function() {
+        translateText(this.value);
+    });
+
+    function displayFileName() {
+        const fileInput = document.getElementById('actual-btn');
+        const fileName = fileInput.files.length > 0 ? fileInput.files[0].name : "No file chosen";
+        document.getElementById('file-chosen').innerText = fileName;
+    }
+</script>
+
+{% endblock body %}
+</html>

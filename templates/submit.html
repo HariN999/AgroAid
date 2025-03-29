@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block pagetitle %}
+{{ title }}
+{% endblock pagetitle %}
+
+{% block body %}
+<style>
+    body {
+        background: linear-gradient(to bottom, #ECF7EC, #B2D8B2);
+        font-family: 'Arial', sans-serif;
+    }
+
+    .navbar {
+        background: rgba(120, 190, 140, 0.9) !important;
+    }
+
+    .shadow-box {
+        background: rgba(255, 255, 255, 0.9);
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    h1 {
+        color: #024D02;
+        font-weight: bold;
+    }
+</style>
+
+<div class="container">
+  <div class="row mb-5 text-center">
+    <div class="col-lg-10 mx-auto">
+      <h1 class="display-4 mt-3"><b id="disease-title">{{ title }} 🍂</b></h1>
+    </div>
+  </div>
+
+  <center>
+    <select id="language-selector" class="form-control form-control-sm">
+      <option value="en" {% if lang == 'en' %}selected{% endif %}>English</option>
+      <option value="hi" {% if lang == 'hi' %}selected{% endif %}>हिंदी (Hindi)</option>
+      <option value="te" {% if lang == 'te' %}selected{% endif %}>తెలుగు (Telugu)</option>
+    </select>
+  </center>
+  <br>
+
+  <center>
+    <div class="col">
+      <div class="shadow-box">
+        <img src="{{ image_url }}" id="disease-image" alt="Detected Disease">
+      </div>
+    </div>
+  </center>
+
+  <br>
+
+  <div class="row">
+    <div class="col-lg-6 info-box">
+      <div class="shadow-box">
+        <h5><b id="brief-description">Brief Description :</b></h5>
+        <p id="desc-text">{{ desc }}</p>
+      </div>
+    </div>
+
+    <div class="col-lg-6 info-box">
+      <div class="shadow-box">
+        <h5><b id="prevent-title">Prevent This Plant Disease By following below steps :</b></h5>
+        <p id="prevent-text">{{ prevent }}</p>
+      </div>
+    </div>
+  </div>
+
+  {% if pred != 4 %}
+  <div class="row">
+    <div class="col-lg-6 mx-auto">
+      <div class="shadow-box text-center">
+        <h5><b id="supplement-title">Supplements :</b></h5>
+        <br>
+        <img src="{{ simage }}" class="img-fluid rounded" style="max-width: 80%; height: auto;">
+        <br><br>
+        <h6 id="supplement-name">
+          {% if sname %}
+            {{ sname }}
+          {% else %}
+            No specific supplements recommended
+          {% endif %}
+        </h6>
+        {% if buy_link %}
+        <a href="{{ buy_link }}" target="_blank">
+          <button class="btn btn-custom">Buy Now</button>
+        </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+<script>
+  document.getElementById("language-selector").addEventListener("change", function() {
+      const lang = this.value;
+      translateContent(lang);
+  });
+
+  function translateContent(lang) {
+      fetch(`/translate?lang=${lang}`)
+      .then(response => response.json())
+      .then(data => {
+          if (data.error) {
+              alert("Translation failed or no data available.");
+              return;
+          }
+
+          document.getElementById("disease-title").innerText = data.title;
+          document.getElementById("desc-text").innerText = data.desc;
+          document.getElementById("prevent-text").innerText = data.prevent;
+          document.getElementById("disease-image").src = data.image_url;
+          document.getElementById("supplement-name").innerText = data.sname || "No specific supplements recommended";
+      })
+      .catch(error => {
+          console.error("Translation Error:", error);
+          alert("Error fetching translation.");
+      });
+  }
+</script>
+
+{% endblock body %}
