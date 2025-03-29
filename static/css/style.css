@@ -1,0 +1,43 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #EAF2D7; /* Light Green for Agriculture Theme */
+    color: #3A5A40;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    background-color: #588157; /* Darker Green */
+    color: white;
+    padding: 20px;
+}
+
+select {
+    padding: 8px;
+    margin-top: 10px;
+}
+
+img {
+    width: 300px;
+    border-radius: 10px;
+}
+
+p {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+a {
+    display: inline-block;
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #A3B18A; /* Soft Green */
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+a:hover {
+    background-color: #6A994E;
+}
