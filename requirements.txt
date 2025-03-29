@@ -1,0 +1,8 @@
+-f https://download.pytorch.org/whl/torch_stable.html
+torch
+torchvision
+googletrans==4.0.0-rc1
+flask
+pandas
+Pillow
+werkzeug==1.0.1
