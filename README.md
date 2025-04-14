@@ -58,8 +58,6 @@ The model is defined in `CNN.py` and loaded in `app.py`. You can replace the exi
 - **Run the app locally** using the above instructions.
 - **Retrain or modify the model** in `CNN.py`.
 - **Update the web interface** via `templates/` and `static/` folders.
-- **Deploy** using tools like Heroku (Procfile already added).
-
 ---
 
 ## 🤝 Contributing
@@ -72,12 +70,6 @@ We welcome all contributions!
 4. Commit (`git commit -m 'Add YourFeature'`)
 5. Push to your fork (`git push origin feature/YourFeature`)
 6. Create a Pull Request
-
----
-
-## 📄 License
-
-This project is licensed under the [MIT License](LICENSE).
 
 ---
 
