@@ -85,6 +85,3 @@ This project is licensed under the [MIT License](LICENSE).
 
 For questions, open an issue or connect via [LinkedIn](https://www.linkedin.com/in/narlakanti-hariharan).
 
----
-
-Let me know if you want me to add badges (build status, license, etc.) or a sample image for the homepage!
