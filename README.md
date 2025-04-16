@@ -19,7 +19,7 @@ AgroAid is a web-based AI system that helps farmers identify crop diseases using
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/HariN999/AgroAid
+git clone https://github.com/HariN999/AgroAid.git
 cd AgroAid
 ```
 
