@@ -1,106 +1,232 @@
 <!doctype html>
 <html lang="en">
-
 <head>
-    <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
     
-    <link rel = "stylesheet" href = "https://cdnjs.cloudflare.com/ajax/libs/bttn.css/0.2.4/bttn.css">
+    <title>{% block pagetitle %}{% endblock pagetitle %} — AgroAid</title>
+    
+    <style>
+        :root {
+            --bg-primary: #08120e;
+            --bg-secondary: #0d1e16;
+            --accent-emerald: #10b981;
+            --accent-mint: #34d399;
+            --accent-forest: #059669;
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --glass-bg: rgba(13, 30, 22, 0.65);
+            --glass-border: rgba(16, 185, 129, 0.15);
+            --glass-glow: 0 8px 32px 0 rgba(16, 185, 129, 0.08);
+        }
 
-    <title> {% block pagetitle %}
+        body {
+            background: radial-gradient(circle at 50% 0%, #0d261b 0%, var(--bg-primary) 70%);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
 
-        {% endblock pagetitle %}</title>
-        <style>
-            body {
-                background: linear-gradient(to right, #E8F5E9, #C8E6C9);
-                font-family: 'Arial', sans-serif;
-            }
-        
-            .navbar {
-                background: rgba(95, 167, 120, 0.9) !important; /* Soft green */
-            }
-        
-            .nav-link {
-                color: #ffffff !important;
-                font-weight: bold;
-            }
-        
-            .footer-basic {
-                background-color: #6EBF77;
-                color: white;
-                padding: 40px 0;
-            }
-        </style>
-        
-        
-        
+        h1, h2, h3, h4, h5, h6, .navbar-brand {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 700;
+        }
+
+        /* Glassmorphism Navigation */
+        .navbar {
+            background: var(--glass-bg) !important;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 18px 0;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand {
+            font-size: 1.45rem;
+            background: linear-gradient(135deg, #a7f3d0 0%, var(--accent-mint) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-link {
+            color: var(--text-secondary) !important;
+            font-weight: 500;
+            font-size: 0.95rem;
+            margin: 0 8px;
+            transition: all 0.25s ease;
+            position: relative;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--accent-mint) !important;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: var(--accent-mint);
+            transition: width 0.25s ease;
+        }
+
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 100%;
+        }
+
+        .navbar-toggler {
+            border-color: var(--glass-border);
+            padding: 6px 10px;
+        }
+
+        .navbar-toggler:focus {
+            box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.25);
+        }
+
+        /* Card System (Glassmorphic) */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            box-shadow: var(--glass-glow);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(52, 211, 153, 0.35);
+            box-shadow: 0 12px 40px 0 rgba(16, 185, 129, 0.15);
+        }
+
+        /* Primary Button */
+        .btn-custom {
+            background: linear-gradient(135deg, var(--accent-forest) 0%, var(--accent-emerald) 100%);
+            border: none;
+            color: white !important;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 600;
+            padding: 12px 28px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px 0 rgba(16, 185, 129, 0.2);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px 0 rgba(16, 185, 129, 0.35);
+            background: linear-gradient(135deg, var(--accent-emerald) 0%, var(--accent-mint) 100%);
+        }
+
+        .btn-custom:active {
+            transform: translateY(0);
+        }
+
+        /* Secondary Outline Button */
+        .btn-outline-custom {
+            border: 2px solid var(--accent-emerald);
+            background: transparent;
+            color: var(--accent-mint) !important;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 600;
+            padding: 10px 26px;
+            border-radius: 12px;
+            transition: all 0.25s ease;
+        }
+
+        .btn-outline-custom:hover {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: var(--accent-mint);
+            color: white !important;
+        }
+
+        /* Footer System */
+        .footer-basic {
+            margin-top: auto;
+            background: var(--glass-bg);
+            border-top: 1px solid var(--glass-border);
+            padding: 40px 0;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        .footer-basic a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.25s;
+            font-size: 0.95rem;
+            margin: 0 15px;
+        }
+
+        .footer-basic a:hover {
+            color: var(--accent-mint);
+        }
+
+        .footer-copyright {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-top: 20px;
+        }
+    </style>
+    {% block additional_styles %}{% endblock additional_styles %}
 </head>
-
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark " style="background-color:#05380b;">
-        <!-- <a class="navbar-brand" href="#">Navbar</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button> -->
-        <div class="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul class="navbar-nav">
-                <li class="navbar-brand active">
-                    <a class="nav-link" href="/" style="color: white;">Home</a>
-                </li>
-                <li class="navbar-brand active">
-                    <a class="nav-link" href="/index" style="color: white;">Agro Aid</a>
-                </li>
-                <li class="navbar-brand">
-                    <a class="nav-link" href="/market" style="color: white;">Supplements</a>
-                </li>
-                <li class="navbar-brand">
-                    <a class="nav-link" href="/contact" style="color: white;">Contact-Us</a>
-                </li>
-            </ul>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">🌱 AgroAid</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/index' %}active{% endif %}" href="/index">AI Diagnostic</a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </nav>
-    {% block body %}
 
-    {% endblock body %}
-    <div class="footer-basic">
-        <footer>
+    <main class="flex-grow-1">
+        {% block body %}{% endblock body %}
+    </main>
 
-            <br>
-            <ul class="list-inline">
-                <center>
-                <li class="list-inline-item"><a href="/">Home</a></li>
-
-                <li class="list-inline-item laptop"><a href="/index">Agro Aid</a></li>
-            </center>
-            </ul>
-         
-        </footer>
+    <div class="footer-basic text-center">
+        <div class="container">
+            <div class="footer-links">
+                <a href="/">Home</a>
+                <a href="/index">AI Diagnostic</a>
+            </div>
+            <div class="footer-copyright">
+                &copy; 2026 AgroAid. Powered by Deep Learning for Sustainable Farming.
+            </div>
+        </div>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
-</body>
-<!-- <script>
-    if (window.matchMedia("(max-width: 767px)").matches)
-    {
-        // The viewport is less than 768 pixels wide
-        document.write("This is a mobile device.");
-        window.location.replace('/mobile-device');
 
-    } else {
-        
-        // The viewport is at least 768 pixels wide
-        document.write("This is a tablet or desktop.");
-    }
-</script> -->
-<!-- <script>
-    if(screen.width <= 700){
-        document.location = 'manthan2.html';
-    }
-</script> -->
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
+</body>
 </html>

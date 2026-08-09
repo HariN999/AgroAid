@@ -1,109 +1,160 @@
 {% extends 'base.html' %}
+{% block pagetitle %}Diagnostic Result: {{ title }}{% endblock pagetitle %}
 
-{% block pagetitle %}
-{{ title }}
-{% endblock pagetitle %}
-
-{% block body %}
+{% block additional_styles %}
 <style>
-    body {
-        background: linear-gradient(to bottom, #ECF7EC, #B2D8B2);
-        font-family: 'Arial', sans-serif;
+    .result-image-container {
+        border-radius: 16px;
+        overflow: hidden;
+        border: 2px solid var(--glass-border);
+        box-shadow: var(--glass-glow);
+        max-width: 100%;
+        background: rgba(0, 0, 0, 0.2);
     }
 
-    .navbar {
-        background: rgba(120, 190, 140, 0.9) !important;
+    .result-image {
+        width: 100%;
+        max-height: 380px;
+        object-fit: cover;
     }
 
-    .shadow-box {
-        background: rgba(255, 255, 255, 0.9);
-        padding: 25px;
-        border-radius: 12px;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    .info-section-title {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: var(--accent-mint);
+        border-left: 3px solid var(--accent-mint);
+        padding-left: 12px;
+        margin-bottom: 16px;
     }
 
-    h1 {
-        color: #024D02;
-        font-weight: bold;
+    .custom-select {
+        background: rgba(13, 30, 22, 0.8);
+        border: 1px solid var(--glass-border);
+        color: var(--text-primary);
+        border-radius: 10px;
+        padding: 8px 36px 8px 16px;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2334d399' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 14px center;
+        background-size: 10px;
+        transition: all 0.25s ease;
+    }
+
+    .custom-select:focus {
+        outline: none;
+        border-color: var(--accent-mint);
     }
 </style>
+{% endblock additional_styles %}
 
-<div class="container">
-  <div class="row mb-5 text-center">
-    <div class="col-lg-10 mx-auto">
-      <h1 class="display-4 mt-3"><b id="disease-title">{{ title }} 🍂</b></h1>
+{% block body %}
+<div class="container py-5">
+    <div class="row align-items-center mb-5 g-4">
+        <div class="col-md-12 text-center text-md-start">
+            <span class="text-secondary text-uppercase tracking-wider fs-7 font-weight-bold d-block mb-1">Diagnostic Report</span>
+            <h1 class="display-5 text-white m-0 mb-3" style="letter-spacing: -1px;" id="disease-title">{{ title }} 🍂</h1>
+            
+            {% if pred != 4 and confidence_level %}
+            <div class="d-flex flex-wrap align-items-center gap-3">
+                <div class="d-inline-flex align-items-center gap-2 py-1.5 px-3 rounded-3" style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border);">
+                    <span class="text-muted" style="font-size: 0.9rem;">Model Confidence:</span>
+                    <span class="badge {% if confidence_level == 'High' %}bg-success{% elif confidence_level == 'Moderate' %}bg-warning text-dark{% else %}bg-danger{% endif %}" style="font-size: 0.85rem; padding: 4px 10px;">
+                        {{ confidence_level }} ({{ (confidence * 100) | round(1) }}%)
+                    </span>
+                </div>
+                
+                {% if alternatives %}
+                <div class="text-muted" style="font-size: 0.85rem;">
+                    <strong>Other possible matches:</strong>
+                    {% for alt in alternatives %}
+                        <span class="badge bg-secondary ms-1" style="font-size: 0.75rem; font-weight: normal; opacity: 0.85;">
+                            {{ alt.disease_name }} ({{ (alt.confidence * 100) | round(1) }}%)
+                        </span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <p class="text-muted mt-2 mb-0" style="font-size: 0.75rem;">* Model confidence score reflects the model's output distribution and is not a calibrated measure of diagnostic certainty. Other possible matches are alternative model predictions, not confirmed diagnoses.</p>
+            
+            {% if confidence_level == 'Low' %}
+            <div class="alert alert-danger mt-3 mb-0 d-inline-block py-2 px-3" style="border: 1px solid rgba(220, 53, 69, 0.2); background: rgba(220, 53, 69, 0.08); color: #f8d7da; font-size: 0.85rem; border-radius: 8px;">
+                ⚠️ The model confidence is low. Please upload a clearer image showing the affected leaf for a better result.
+            </div>
+            {% endif %}
+            {% endif %}
+        </div>
     </div>
-  </div>
 
-  <center>
-    <select id="language-selector" class="form-control form-control-sm">
-      <option value="en" {% if lang == 'en' %}selected{% endif %}>English</option>
-      <option value="hi" {% if lang == 'hi' %}selected{% endif %}>हिंदी (Hindi)</option>
-      <option value="te" {% if lang == 'te' %}selected{% endif %}>తెలుగు (Telugu)</option>
-    </select>
-  </center>
-  <br>
+    <!-- Main Results Grid -->
+    <div class="row g-5">
+        <!-- Left: Image Reference & Treatment Guidance -->
+        <div class="col-lg-5">
+            <div class="glass-card p-4 text-center mb-4">
+                <div class="result-image-container mb-3">
+                    <img src="{{ image_url }}" id="disease-image" class="result-image img-fluid" alt="Detected Disease Reference">
+                </div>
+                <p class="text-muted m-0" style="font-size: 0.85rem;">Reference visual match from PlantVillage dataset</p>
+            </div>
 
-  <center>
-    <div class="col">
-      <div class="shadow-box">
-        <img src="{{ image_url }}" id="disease-image" alt="Detected Disease">
-      </div>
+            {% if pred != 4 %}
+            <!-- Treatment Guidance Card -->
+            <div class="glass-card p-4 text-center">
+                <h5 class="info-section-title text-start mb-3" id="treatment-title">Treatment Guidance</h5>
+                
+                <div class="text-start">
+                    <p class="mb-2">
+                        <strong class="text-muted">Active Ingredient:</strong> 
+                        <span id="treatment-ingredient" class="text-white">
+                            {% if active_ingredient == 'Not established' %}
+                                No verified active ingredient is currently available for this diagnosis.
+                            {% else %}
+                                {{ active_ingredient }}
+                            {% endif %}
+                        </span>
+                    </p>
+                    <p class="mb-2"><strong class="text-muted">Treatment Type:</strong> <span id="treatment-type" class="text-white">{{ treatment_type }}</span></p>
+                    <p class="mb-2"><strong class="text-muted">Purpose:</strong> <span id="treatment-purpose" class="text-white">{{ purpose }}</span></p>
+                    <p class="mb-0"><strong class="text-muted">Verification Status:</strong> <span id="treatment-verification" class="badge {% if verification_status == 'Verified' %}bg-success{% else %}bg-warning text-dark{% endif %}">{{ verification_status }}</span></p>
+                    
+                    {% if verification_status == 'Needs verification' %}
+                    <p class="text-warning mt-3 mb-0" style="font-size: 0.85rem;">⚠️ Treatment information requires verification.</p>
+                    {% endif %}
+                    
+                    <p class="text-muted mt-3 mb-0" style="font-size: 0.75rem; border-top: 1px solid var(--glass-border); padding-top: 8px; line-height: 1.3;">
+                        Treatment suitability depends on crop, disease severity, local regulations, formulation, and application conditions. Always follow the label of the locally registered product.
+                    </p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Right: Description and Preventions -->
+        <div class="col-lg-7">
+            <div class="glass-card p-4 p-md-5 mb-4">
+                <h5 class="info-section-title" id="brief-description">Disease Overview</h5>
+                <p id="desc-text" class="text-secondary fs-6 leading-relaxed" style="line-height: 1.75;">{{ desc }}</p>
+            </div>
+
+            <div class="glass-card p-4 p-md-5">
+                <h5 class="info-section-title" id="prevent-title">Preventions & Next Steps</h5>
+                <p id="prevent-text" class="text-secondary fs-6 leading-relaxed" style="line-height: 1.75; white-space: pre-line;">{{ prevent }}</p>
+            </div>
+        </div>
     </div>
-  </center>
-
-  <br>
-
-  <div class="row">
-    <div class="col-lg-6 info-box">
-      <div class="shadow-box">
-        <h5><b id="brief-description">Brief Description :</b></h5>
-        <p id="desc-text">{{ desc }}</p>
-      </div>
+    
+    <!-- Global safety disclaimer -->
+    <div class="row mt-5">
+        <div class="col-12 text-center">
+            <p class="text-muted" style="font-size: 0.85rem;">
+                ℹ️ <em>Disclaimer: AI diagnosis is an aid and not a substitute for qualified agricultural advice or local extensions guidance.</em>
+            </p>
+        </div>
     </div>
-
-    <div class="col-lg-6 info-box">
-      <div class="shadow-box">
-        <h5><b id="prevent-title">Prevent This Plant Disease By following below steps :</b></h5>
-        <p id="prevent-text">{{ prevent }}</p>
-      </div>
-    </div>
-  </div>
-
-  {% if pred != 4 %}
-  <div class="row">
-    <div class="col-lg-6 mx-auto">
-      <div class="shadow-box text-center">
-        <h5><b id="supplement-title">Supplements :</b></h5>
-        <br>
-        <img src="{{ simage }}" class="img-fluid rounded" style="max-width: 80%; height: auto;">
-        <br><br>
-        <h6 id="supplement-name">
-          {% if sname %}
-            {{ sname }}
-          {% else %}
-            No specific supplements recommended
-          {% endif %}
-        </h6>
-        {% if buy_link %}
-        <a href="{{ buy_link }}" target="_blank">
-          <button class="btn btn-custom">Buy Now</button>
-        </a>
-        {% endif %}
-      </div>
-    </div>
-  </div>
-  {% endif %}
 </div>
-
 <script>
-  document.getElementById("language-selector").addEventListener("change", function() {
-      const lang = this.value;
-      translateContent(lang);
-  });
-
   function translateContent(lang) {
-      fetch(`/translate?lang=${lang}`)
+      fetch(`/translate?lang=${lang}&pred={{ pred }}`)
       .then(response => response.json())
       .then(data => {
           if (data.error) {
@@ -115,7 +166,35 @@
           document.getElementById("desc-text").innerText = data.desc;
           document.getElementById("prevent-text").innerText = data.prevent;
           document.getElementById("disease-image").src = data.image_url;
-          document.getElementById("supplement-name").innerText = data.sname || "No specific supplements recommended";
+          
+          const ingredientEl = document.getElementById("treatment-ingredient");
+          if (ingredientEl) {
+              if (data.active_ingredient === "Not established") {
+                  ingredientEl.innerText = "No verified active ingredient is currently available for this diagnosis.";
+              } else {
+                  ingredientEl.innerText = data.active_ingredient || "";
+              }
+          }
+          
+          const typeEl = document.getElementById("treatment-type");
+          if (typeEl) {
+              typeEl.innerText = data.treatment_type || "";
+          }
+
+          const purposeEl = document.getElementById("treatment-purpose");
+          if (purposeEl) {
+              purposeEl.innerText = data.purpose || "";
+          }
+
+          const verificationEl = document.getElementById("treatment-verification");
+          if (verificationEl) {
+              verificationEl.innerText = data.verification_status || "";
+              if (data.verification_status === 'Verified') {
+                  verificationEl.className = "badge bg-success";
+              } else {
+                  verificationEl.className = "badge bg-warning text-dark";
+              }
+          }
       })
       .catch(error => {
           console.error("Translation Error:", error);
@@ -123,5 +202,4 @@
       });
   }
 </script>
-
 {% endblock body %}

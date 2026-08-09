@@ -1,0 +1,40 @@
+index,disease_name,active_ingredient,treatment_type,purpose,verification_status
+0,Apple___Apple_scab,Propiconazole,Systemic Fungicide,Scab Management,Verified
+1,Apple___Black_rot,Not established,Fungicide,Rot Management,Needs verification
+2,Apple___Cedar_apple_rust,Not established,Fungicide,Rust Prevention,Needs verification
+3,Apple___healthy,None,None,Healthy maintenance,Verified
+4,Background_without_leaves,None,None,None,Verified
+5,Blueberry___healthy,None,None,Healthy maintenance,Verified
+6,Cherry___Powdery_mildew,Not established,Fungicide,Mildew Control,Needs verification
+7,Cherry___healthy,None,None,Healthy maintenance,Verified
+8,Corn___Cercospora_leaf_spot Gray_leaf_spot,Not established,Fungicide,Spot Control,Needs verification
+9,Corn___Common_rust,Mancozeb,Contact Fungicide,Rust Management,Verified
+10,Corn___Northern_Leaf_Blight,Carbendazim (12%) + Mancozeb (63%),Systemic & Contact Fungicide,Blight Control,Verified
+11,Corn___healthy,None,None,Healthy maintenance,Verified
+12,Grape___Black_rot,Captan,Contact Fungicide,Rot Management,Verified
+13,Grape___Esca_(Black_Measles),Not established,Fungicide,Esca Management,Needs verification
+14,Grape___Leaf_blight_(Isariopsis_Leaf_Spot),Tebuconazole (10%) + Sulphur (65%),Systemic & Contact Fungicide,Blight Control,Verified
+15,Grape___healthy,None,None,Healthy maintenance,Verified
+16,Orange___Haunglongbing_(Citrus_greening),Not established,Vector Control / Micronutrients,Symptom Management,Needs verification
+17,Peach___Bacterial_spot,Not established,Fungicide / Bactericide,Spot Suppression,Needs verification
+18,Peach___healthy,None,None,Healthy maintenance,Verified
+19,"Pepper,_bell___Bacterial_spot",Tetraconazole,Systemic Fungicide,Bacterial Spot Control,Verified
+20,"Pepper,_bell___healthy",None,None,Healthy maintenance,Verified
+21,Potato___Early_blight,Turmeric Extract / Herbal Fungicide,Herbal / Biological Fungicide,Early Blight Control,Verified
+22,Potato___Late_blight,Not established,Fungicide,Late Blight Control,Needs verification
+23,Potato___healthy,None,None,Healthy maintenance,Verified
+24,Raspberry___healthy,None,None,Healthy maintenance,Verified
+25,Soybean___healthy,None,None,Healthy maintenance,Verified
+26,Squash___Powdery_mildew,Not established,Fungicide,Mildew Suppression,Needs verification
+27,Strawberry___Leaf_scorch,Not established,Fungicide,Scorch Prevention,Needs verification
+28,Strawberry___healthy,None,None,Healthy maintenance,Verified
+29,Tomato___Bacterial_spot,Not established,Fungicide / Bactericide,Bacterial Spot Management,Needs verification
+30,Tomato___Early_blight,Not established,Fungicide,Early Blight Control,Needs verification
+31,Tomato___Late_blight,Not established,Fungicide,Late Blight Control,Needs verification
+32,Tomato___Leaf_Mold,Not established,Fungicide / Viricide,Mold Suppression,Needs verification
+33,Tomato___Septoria_leaf_spot,Not established,Fungicide,Leaf Spot Prevention,Needs verification
+34,Tomato___Spider_mites Two-spotted_spider_mite,Not established,Insecticide / Acaricide,Mite Management,Needs verification
+35,Tomato___Target_Spot,Propineb,Contact Fungicide,Target Spot Suppression,Verified
+36,Tomato___Tomato_Yellow_Leaf_Curl_Virus,Not established,Fungicide,Viral Symptom Control,Needs verification
+37,Tomato___Tomato_mosaic_virus,Not established,Viricide / Cultural Control,Viral Spread Prevention,Needs verification
+38,Tomato___healthy,None,None,Healthy maintenance,Verified

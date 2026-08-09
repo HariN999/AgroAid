@@ -1,0 +1,48 @@
+# Virtual Environments
+myenv/
+venv/
+.venv/
+env/
+ENV/
+myenv*
+venv*
+
+# Python Cache & Compiled Files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Model Weights / Large Binaries
+models/*.pt
+models/*.pth
+models/*.h5
+*.pt
+*.pth
+*.h5
+
+# Local Uploads
+static/uploads/*
+!static/uploads/.gitkeep
+
+# Environment variables / secrets
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+logs/
+
+# OS Specific
+.DS_Store
+Thumbs.db
+
+# IDE / Editor Settings
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

@@ -1,117 +1,172 @@
-<html>
 {% extends 'base.html' %}
+{% block pagetitle %}AI Diagnostic Engine{% endblock pagetitle %}
 
-{% block pagetitle %}
-AI Engine
-{% endblock pagetitle %}
-
-{% block body %}
-
+{% block additional_styles %}
 <style>
-    body {
-        background: radial-gradient(circle, #E0F8E0, #98E898);
-        font-family: 'Arial', sans-serif;
+    .upload-zone {
+        border: 2px dashed rgba(16, 185, 129, 0.4);
+        background: rgba(13, 30, 22, 0.3);
+        border-radius: 15px;
+        padding: 30px 20px;
+        transition: all 0.3s ease;
+        position: relative;
+        cursor: pointer;
     }
 
-    .navbar {
-        background: rgba(120, 190, 140, 0.9) !important; /* Soft green */
+    .upload-zone:hover {
+        border-color: var(--accent-mint);
+        background: rgba(16, 185, 129, 0.08);
     }
 
-    .shadow-box {
-        background: rgba(255, 255, 255, 0.9);
-        padding: 25px;
+    .preview-image {
+        width: 140px;
+        height: 140px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 3px solid var(--accent-emerald);
+        box-shadow: 0 0 20px 0 rgba(16, 185, 129, 0.25);
+        transition: all 0.3s ease;
+    }
+
+    .custom-input {
+        background: rgba(13, 30, 22, 0.8);
+        border: 1px solid var(--glass-border);
+        color: var(--text-primary);
         border-radius: 12px;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        padding: 12px 16px;
+        width: 100%;
+        transition: all 0.25s ease;
     }
 
-    h1 {
-        color: #034D03;
+    .custom-input:focus {
+        outline: none;
+        border-color: var(--accent-mint);
+        box-shadow: 0 0 15px 0 rgba(52, 211, 153, 0.2);
+    }
+
+    select.custom-input {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2334d399' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 16px center;
+        background-size: 12px;
+    }
+
+    .nav-tabs-custom {
+        border-bottom: 1px solid var(--glass-border);
+    }
+
+    .step-list li {
+        position: relative;
+        padding-left: 28px;
+        margin-bottom: 12px;
+        list-style: none;
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+    }
+
+    .step-list li::before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        top: 0;
+        color: var(--accent-mint);
         font-weight: bold;
     }
 </style>
+{% endblock additional_styles %}
 
-
-
-
-<div class="container">
+{% block body %}
+<div class="container py-5">
     <div class="row mb-5 text-center">
-        <div class="col-lg-10 mx-auto">
-            <h1 class="display-4 mt-3"><b>🍀 Agro Aid 🍀</b></h1>
-            <p class="lead">Let AI Engine Help You Detect Plant Diseases</p>
+        <div class="col-lg-8 mx-auto">
+            <h1 class="display-5 mb-2 text-white" style="letter-spacing: -1px;">AI Diagnostic Engine</h1>
+            <p class="text-secondary">Scan plant leaf samples or lookup symptoms to diagnose diseases instantly.</p>
         </div>
     </div>
 
-    <div class="row">
-        <!-- Why Disease Detection is Important -->
-        <div class="col-md-4">
-            <div class="shadow-box">
-                <h5><b>Why is it necessary to detect disease in plants?</b></h5>
-                <p>Plant diseases can reduce crop yield and impact food production...</p>
-            </div>
-        </div>
-
-        <!-- File Upload Section -->
-        <div class="col-md-4">
-            <div class="shadow-box text-center">
-                <img id="preview" src="https://www.pngjoy.com/pngl/250/4840262_plants-png-indoors-tropical-plant-png-hd-png.png"
-                    height="200" width="200" class="rounded-circle mb-3" alt="Plant Image">
+    <div class="row g-5">
+        <!-- Left: Upload & Diagnostics -->
+        <div class="col-lg-7">
+            <div class="glass-card p-4 p-md-5 mb-5">
+                <h3 class="mb-4 text-white" style="font-size: 1.4rem;">Option 1: Scan Leaf Image</h3>
+                
+                <div class="upload-zone text-center mb-4" onclick="document.getElementById('actual-btn').click();">
+                    <img id="preview" src="https://www.pngjoy.com/pngl/250/4840262_plants-png-indoors-tropical-plant-png-hd-png.png"
+                        class="preview-image mb-3" alt="Leaf Preview">
+                    
+                    <div>
+                        <span id="file-chosen" class="d-block text-secondary mb-2 font-weight-bold">No file chosen</span>
+                        <span class="text-muted" style="font-size: 0.85rem;">PNG, JPG, JPEG, WEBP files supported</span>
+                    </div>
+                </div>
 
                 <form id="uploadForm" action="/submit" method="POST" enctype="multipart/form-data">
                     <input type="file" id="actual-btn" hidden name="image" accept="image/*" onchange="displayFileName()" />
-                    <label for="actual-btn" class="btn btn-outline-success">Choose File</label>
-                    <span id="file-chosen">No file chosen</span>
-
-                    <h6 class="mt-3 text-muted">Upload a plant's leaf image and let AI analyze it.</h6>
-                    <button type="submit" class="btn btn-custom mt-2">Submit</button>
+                    
+                    <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
+                        <button type="button" class="btn btn-outline-custom" onclick="document.getElementById('actual-btn').click();">Browse Image</button>
+                        <button type="submit" class="btn btn-custom">Analyze Health</button>
+                    </div>
                 </form>
             </div>
-        </div>
 
-        <!-- Prevention Tips -->
-        <div class="col-md-4">
-            <div class="shadow-box">
-                <h5><b>Prevent Plant Disease, Follow these steps:</b></h5>
-                <ul>
-                    <li>Follow Good Sanitation Practices.</li>
-                    <li>Ensure proper air circulation.</li>
-                    <li>Use disease-resistant plant varieties.</li>
-                    <li>Rotate crops for healthy soil.</li>
-                    <li>Remove infected leaves immediately.</li>
-                </ul>
-                <a target="_blank" href="https://www.thespruce.com/prevent-plant-diseases-in-your-garden-2539511">
-                    <button class="btn btn-custom">More Info</button>
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Symptom-Based Diagnosis -->
-<div class="container mt-5">
-    <div class="row">
-        <div class="col-lg-8 mx-auto">
-            <div class="shadow-box">
-                <h5><b>Enter Symptoms:</b></h5>
+            <!-- Symptom Lookup -->
+            <div class="glass-card p-4 p-md-5">
+                <h3 class="mb-4 text-white" style="font-size: 1.4rem;">Option 2: Symptom Checker</h3>
                 <form id="disease-form">
-                    <textarea id="symptoms" class="custom-input" placeholder="Enter symptoms here" rows="5" cols="50"></textarea>
-                    <button type="button" class="btn btn-custom mt-3" onclick="predictDisease()">Predict Disease</button>
+                    <div class="mb-4">
+                        <label class="form-label text-secondary mb-2" style="font-size: 0.9rem;">Describe what you observe on the leaves (e.g. spots, yellowing):</label>
+                        <textarea id="symptoms" class="custom-input" placeholder="e.g. white powdery spots, yellowing leaves" rows="4"></textarea>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <button type="button" class="btn btn-custom w-100" onclick="predictDisease()">Check Symptoms</button>
+                    </div>
                 </form>
 
-                <!-- Language Selector -->
-                <select id="language-selector" class="form-control form-control-sm mt-3" style="width: 200px;">
-                    <option value="en">English</option>
-                    <option value="hi">हिंदी (Hindi)</option>
-                    <option value="te">తెలుగు (Telugu)</option>
-                </select>
-
-                <div id="prediction-results" class="mt-4" style="display: none;">
-                    <h5><b>Predicted Disease:</b></h5>
-                    <p id="disease-name"></p>
-                    <h6><b>Prevention:</b></h6>
-                    <p id="prevention"></p>
-                    <h6><b>Recommended Supplements:</b></h6>
-                    <p id="supplements"></p>
+                <!-- Translation Results -->
+                <div id="prediction-results" class="mt-4 p-4 rounded-3" style="display: none; background: rgba(13, 30, 22, 0.4); border: 1px solid var(--glass-border);">
+                    <h5 class="text-white mb-3" style="font-size: 1.1rem; border-left: 3px solid var(--accent-mint); padding-left: 10px;">Diagnostic Results</h5>
+                    
+                    <div class="mb-3">
+                        <span class="text-muted d-block" style="font-size: 0.85rem;">Predicted Disease:</span>
+                        <strong id="disease-name" class="text-white fs-5"></strong>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <span class="text-muted d-block" style="font-size: 0.85rem;">Organic Prevention:</span>
+                        <p id="prevention" class="text-secondary m-0" style="font-size: 0.95rem;"></p>
+                    </div>
+                    
+                    <div>
+                        <span class="text-muted d-block" style="font-size: 0.85rem;">Treatment Guidance:</span>
+                        <p id="treatment" class="text-secondary m-0" style="font-size: 0.95rem;"></p>
+                    </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Right: Guidelines / Instructions -->
+        <div class="col-lg-5">
+            <div class="glass-card p-4 p-md-5 mb-5">
+                <h3 class="mb-4 text-white" style="font-size: 1.3rem;">Best Scanning Practices</h3>
+                <ul class="step-list p-0 m-0">
+                    <li><b>Focus clearly on the leaf:</b> Avoid shadows, background soil clutter, or branch overlap.</li>
+                    <li><b>Ensure good lighting:</b> Use natural diffused sunlight. Avoid overexposure or dark spots.</li>
+                    <li><b>Crop target details:</b> Position the diseased area/leaf spot in the center of the image.</li>
+                    <li><b>High resolution uploads:</b> Pillow transforms will format shapes automatically, but details must be sharp.</li>
+                </ul>
+            </div>
+
+            <div class="glass-card p-4 p-md-5">
+                <h3 class="mb-4 text-white" style="font-size: 1.3rem;">General Crop Prevention</h3>
+                <ul class="step-list p-0 m-0">
+                    <li><b>Crop Rotation:</b> Disrupt cycles of soilborne pathogens by changing crop families annually.</li>
+                    <li><b>Drip Irrigation:</b> Water the root zones directly. Wet leaves encourage fungal mold spores.</li>
+                    <li><b>Sanitation:</b> Prune and burn infected branch foliage immediately. Never compost diseased plant waste.</li>
+                    <li><b>Air Circulation:</b> Space rows properly to prevent micro-humidity build-ups.</li>
+                </ul>
             </div>
         </div>
     </div>
@@ -123,15 +178,17 @@ AI Engine
             disease: "Powdery Mildew",
             symptoms: ["white powdery spots", "yellowing leaves", "stunted growth"],
             prevention: "Ensure good air circulation, avoid overhead watering.",
-            supplements: "Fungicides, Neem oil"
+            treatment: "Neem oil / Bio-fungicide"
         },
         {
             disease: "Downy Mildew",
             symptoms: ["yellow spots", "dark green leaves", "fuzzy growth on leaves"],
             prevention: "Water plants at the base, use resistant varieties.",
-            supplements: "Copper-based fungicides, Bacillus subtilis"
+            treatment: "Copper-based fungicides / Bio-fungicide"
         }
     ];
+
+    let currentSymptomPredIndex = 26; // Default to Squash : Powdery Mildew
 
     function predictDisease() {
         const symptomsInput = document.getElementById('symptoms').value.toLowerCase();
@@ -141,18 +198,19 @@ AI Engine
 
         if (results.length > 0) {
             const disease = results[0];
+            currentSymptomPredIndex = disease.disease === "Powdery Mildew" ? 26 : 6; // Map mock symptoms to real indices (26: Squash PM, 6: Cherry PM)
             document.getElementById('disease-name').innerText = disease.disease;
             document.getElementById('prevention').innerText = disease.prevention;
-            document.getElementById('supplements').innerText = disease.supplements;
+            document.getElementById('treatment').innerText = disease.treatment;
             document.getElementById('prediction-results').style.display = 'block';
         } else {
             document.getElementById('prediction-results').style.display = 'none';
-            alert("No matching disease found based on symptoms.");
+            alert("No matching disease found based on symptoms. Try adding different keywords.");
         }
     }
 
     function translateText(lang) {
-        fetch(`/translate?lang=${lang}`)
+        fetch(`/translate?lang=${lang}&pred=${currentSymptomPredIndex}`)
         .then(response => response.json())
         .then(data => {
             if (data.error) {
@@ -162,7 +220,7 @@ AI Engine
 
             document.getElementById('disease-name').innerText = data.title;
             document.getElementById('prevention').innerText = data.prevent;
-            document.getElementById('supplements').innerText = data.supplements;
+            document.getElementById('treatment').innerText = data.active_ingredient || "";
         })
         .catch(error => {
             console.error("Translation Error:", error);
@@ -170,16 +228,27 @@ AI Engine
         });
     }
 
-    document.getElementById("language-selector").addEventListener("change", function() {
-        translateText(this.value);
-    });
 
     function displayFileName() {
         const fileInput = document.getElementById('actual-btn');
         const fileName = fileInput.files.length > 0 ? fileInput.files[0].name : "No file chosen";
         document.getElementById('file-chosen').innerText = fileName;
-    }
-</script>
 
+        if (fileInput.files.length > 0) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('preview').src = e.target.result;
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        }
+    }
+
+    document.getElementById("uploadForm").addEventListener("submit", function(e) {
+        const fileInput = document.getElementById('actual-btn');
+        if (fileInput.files.length === 0) {
+            e.preventDefault();
+            alert("Please choose a leaf image file first.");
+        }
+    });
+</script>
 {% endblock body %}
-</html>
